@@ -1,10 +1,3 @@
-# ✅ README MIS À JOUR AVEC TES CONTACTS
-
-**Voici le README avec tes informations personnelles intégrées :**
-
----
-
-```markdown
 # 🎓 Afretec Pulse 2025
 
 **Real-time Conference Engagement & Gamification Platform**
@@ -135,6 +128,7 @@ A full-stack mobile application for the Afretec 2025 Innovation & Collaboration 
 ---
 
 ## 📁 Project Structure
+
 ```
 
 afretec-pulse/
@@ -169,7 +163,7 @@ afretec-pulse/
 ├── package.json
 └── README.md
 
-````
+```
 
 ---
 
@@ -195,7 +189,7 @@ git clone <your-repo-url>
 cd afretec-pulse
 
 # Or simply extract the ZIP file
-````
+```
 
 ### 2. Install Mobile App Dependencies
 
