@@ -1,0 +1,51 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Participants: peuvent lire/modifier leur propre doc
+    match /participants/{participantId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && 
+                      resource.data.code == request.resource.data.code;
+    }
+    
+    // Activities: lecture publique, écriture admin
+    match /activities/{activityId} {
+      allow read: if true;
+      allow write: if false; // Seulement via Cloud Functions ou manuellement
+    }
+    
+    // Badges: lecture publique
+    match /badges/{badgeId} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    // Micro évaluations: create seulement
+    match /micro_evaluations/{evalId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+    
+    // Évaluation finale: create seulement
+    match /final_evaluations/{evalId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+    
+    // Points history: lecture seulement
+    match /points_history/{pointId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+    
+    // Badges débloqués: lecture seulement
+    match /participant_badges/{badgeId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
