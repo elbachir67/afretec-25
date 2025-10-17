@@ -255,6 +255,40 @@ const ACTIVITIES = [
     scheduledStart: new Date("2025-10-22T10:30:00Z"),
     scheduledEnd: new Date("2025-10-22T12:30:00Z"),
   },
+  // EVALUATIONS
+  {
+    code: "day1-evaluation",
+    title: {
+      en: "Day 1 Evaluation",
+      fr: "Évaluation du Jour 1",
+    },
+    type: "evaluation",
+    day: 1,
+    evaluationStart: new Date("2025-10-20T17:00:00Z"),
+    canEvaluate: false,
+  },
+  {
+    code: "day2-evaluation",
+    title: {
+      en: "Day 2 Evaluation",
+      fr: "Évaluation du Jour 2",
+    },
+    type: "evaluation",
+    day: 2,
+    evaluationStart: new Date("2025-10-21T17:30:00Z"),
+    canEvaluate: false,
+  },
+  {
+    code: "final-evaluation",
+    title: {
+      en: "Final Evaluation",
+      fr: "Évaluation Finale",
+    },
+    type: "evaluation",
+    day: 3,
+    evaluationStart: new Date("2025-10-22T12:30:00Z"),
+    canEvaluate: false,
+  },
 ];
 
 module.exports = ACTIVITIES;

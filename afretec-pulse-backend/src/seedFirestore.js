@@ -2,7 +2,6 @@
 const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 const ACTIVITIES = require("./data/activities");
-const BADGES = require("./data/badges");
 
 // Initialiser Firebase Admin
 admin.initializeApp({
@@ -12,8 +11,39 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+async function cleanOldCollections() {
+  console.log("🧹 Cleaning old collections...");
+
+  const collectionsToDelete = [
+    "badges",
+    "participant_badges",
+    "points_history",
+    "micro_evaluations",
+  ];
+
+  for (const collectionName of collectionsToDelete) {
+    const snapshot = await db.collection(collectionName).get();
+    if (!snapshot.empty) {
+      console.log(`  Deleting ${snapshot.size} documents from ${collectionName}...`);
+      const batch = db.batch();
+      snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+      await batch.commit();
+    }
+  }
+
+  console.log("✅ Old collections cleaned");
+}
+
 async function seedActivities() {
   console.log("🌱 Seeding activities...");
+
+  const snapshot = await db.collection("activities").get();
+  if (!snapshot.empty) {
+    console.log(`  Deleting ${snapshot.size} existing activities...`);
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+    await batch.commit();
+  }
 
   for (const activity of ACTIVITIES) {
     await db.collection("activities").add({
@@ -28,20 +58,30 @@ async function seedActivities() {
   console.log(`✅ ${ACTIVITIES.length} activities seeded`);
 }
 
-async function seedBadges() {
-  console.log("🌱 Seeding badges...");
+async function createEvaluationCollections() {
+  console.log("🌱 Creating evaluation collections...");
 
-  for (const badge of BADGES) {
-    await db.collection("badges").doc(badge.id).set(badge);
+  const collections = ["daily_evaluations", "final_evaluations"];
+
+  for (const collectionName of collections) {
+    const collectionRef = db.collection(collectionName);
+    const snapshot = await collectionRef.limit(1).get();
+
+    if (snapshot.empty) {
+      console.log(`  Creating ${collectionName} collection...`);
+    } else {
+      console.log(`  ${collectionName} collection already exists`);
+    }
   }
 
-  console.log(`✅ ${BADGES.length} badges seeded`);
+  console.log("✅ Evaluation collections ready");
 }
 
 async function main() {
   try {
+    await cleanOldCollections();
     await seedActivities();
-    await seedBadges();
+    await createEvaluationCollections();
     console.log("🎉 Seeding complete!");
     process.exit(0);
   } catch (error) {
